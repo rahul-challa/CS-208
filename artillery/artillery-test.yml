@@ -1,0 +1,21 @@
+config:
+  # This is a test server run by team Artillery
+  # It's designed to be highly scalable
+  target: http://java-app.default.127.0.0.1.sslip.io
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      rampTo: 20
+      name: Warm up phase
+    - duration: 60
+      arrivalRate: 30
+      rampTo: 60
+      name: Ramp up load
+    - duration: 30
+      arrivalRate: 100
+      rampTo:
+      name: Spike phase
+scenarios:
+  - flow:
+      - get:
+          url: '/'

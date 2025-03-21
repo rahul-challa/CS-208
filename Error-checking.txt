@@ -1,0 +1,51 @@
+1. Check the Service Description
+Run:
+
+kubectl describe ksvc java-app
+Look for errors in the Conditions section. It might indicate why the revision is missing.
+
+2. Check Knative Revisions
+List the revisions:
+
+
+kubectl get revision
+If there are no revisions, the service might have failed to create one.
+If there is a revision, check its status.
+3. Check Knative Configuration
+Run:
+
+kubectl get configuration java-app -o yaml
+Look for issues such as:
+
+Image pull errors
+Missing or incorrect environment variables
+4. Check Pod Status
+Knative uses Kubernetes deployments behind the scenes. Check if pods are being created:
+
+kubectl get pods --selector=serving.knative.dev/service=java-app
+If no pods are running, check logs.
+
+5. Check Logs for Errors
+Check logs for potential issues:
+
+
+kubectl logs -l serving.knative.dev/service=java-app --all-containers
+or
+
+
+kubectl logs deploy/java-app-deployment
+Look for errors related to the container image, runtime, or environment variables.
+
+6. Check Events
+Run:
+
+
+kubectl get events --sort-by=.metadata.creationTimestamp
+This will show any failures in pulling the image, permission issues, or other deployment failures.
+
+7. Manually Redeploy the Service
+Try deleting the Knative service and redeploying it:
+
+
+kubectl delete ksvc java-app
+kubectl apply -f java-app.yaml
